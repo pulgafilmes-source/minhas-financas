@@ -1,0 +1,1270 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<title>Minhas Finanças</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💸%3C/text%3E%3C/svg%3E">
+<style>
+/* ================= Cores (claro / escuro) ================= */
+:root {
+  color-scheme: light;
+  --fundo: #f5f5f7;
+  --card: rgba(255, 255, 255, 0.78);
+  --card-solido: #ffffff;
+  --vidro: rgba(245, 245, 247, 0.72);
+  --linha: rgba(0, 0, 0, 0.08);
+  --texto: #1d1d1f;
+  --texto-2: #6e6e73;
+  --texto-3: #86868b;
+  --azul: #0071e3;
+  --verde: #1f9d45;
+  --laranja: #c76a00;
+  --vermelho: #d70015;
+  --trilho: rgba(0, 0, 0, 0.07);
+  --sombra: 0 1px 2px rgba(0,0,0,.04), 0 8px 28px rgba(0,0,0,.06);
+  --sombra-forte: 0 20px 60px rgba(0,0,0,.18);
+  /* anéis estilo Apple Watch */
+  --anel-1: #f0134d;
+  --anel-2: #4cb520;
+  --anel-3: #0fa9c2;
+  /* categorias (ordem fixa, cada categoria tem sempre a mesma cor) */
+  --cat-1: #2a78d6; --cat-2: #eb6834; --cat-3: #1baf7a; --cat-4: #eda100;
+  --cat-5: #e87ba4; --cat-6: #008300; --cat-7: #4a3aa7; --cat-8: #e34948;
+  --cat-outros: #a1a19c;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --fundo: #000000;
+    --card: rgba(28, 28, 30, 0.78);
+    --card-solido: #1c1c1e;
+    --vidro: rgba(22, 22, 23, 0.72);
+    --linha: rgba(255, 255, 255, 0.1);
+    --texto: #f5f5f7;
+    --texto-2: #a1a1a6;
+    --texto-3: #8e8e93;
+    --azul: #2997ff;
+    --verde: #30d158;
+    --laranja: #ff9f0a;
+    --vermelho: #ff453a;
+    --trilho: rgba(255, 255, 255, 0.1);
+    --sombra: 0 1px 2px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.35);
+    --sombra-forte: 0 20px 60px rgba(0,0,0,.6);
+    --anel-1: #fa114f;
+    --anel-2: #92e82a;
+    --anel-3: #1eeaef;
+    --cat-1: #3987e5; --cat-2: #d95926; --cat-3: #199e70; --cat-4: #c98500;
+    --cat-5: #d55181; --cat-6: #008300; --cat-7: #9085e9; --cat-8: #e66767;
+    --cat-outros: #77766f;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --fundo: #000000;
+  --card: rgba(28, 28, 30, 0.78);
+  --card-solido: #1c1c1e;
+  --vidro: rgba(22, 22, 23, 0.72);
+  --linha: rgba(255, 255, 255, 0.1);
+  --texto: #f5f5f7;
+  --texto-2: #a1a1a6;
+  --texto-3: #8e8e93;
+  --azul: #2997ff;
+  --verde: #30d158;
+  --laranja: #ff9f0a;
+  --vermelho: #ff453a;
+  --trilho: rgba(255, 255, 255, 0.1);
+  --sombra: 0 1px 2px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.35);
+  --sombra-forte: 0 20px 60px rgba(0,0,0,.6);
+  --anel-1: #fa114f;
+  --anel-2: #92e82a;
+  --anel-3: #1eeaef;
+  --cat-1: #3987e5; --cat-2: #d95926; --cat-3: #199e70; --cat-4: #c98500;
+  --cat-5: #d55181; --cat-6: #008300; --cat-7: #9085e9; --cat-8: #e66767;
+  --cat-outros: #77766f;
+}
+
+/* ================= Base ================= */
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.47;
+  letter-spacing: -0.022em;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+/* um brilho suave no fundo, só pra dar profundidade ao vidro */
+body::before {
+  content: "";
+  position: fixed; inset: -20vh -20vw auto auto;
+  width: 70vw; height: 70vh;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--anel-3) 14%, transparent), transparent);
+  pointer-events: none; z-index: -1;
+}
+body::after {
+  content: "";
+  position: fixed; inset: auto auto -25vh -20vw;
+  width: 70vw; height: 70vh;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--anel-1) 10%, transparent), transparent);
+  pointer-events: none; z-index: -1;
+}
+button, input, select { font: inherit; color: inherit; letter-spacing: inherit; }
+button { cursor: pointer; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ================= Barra do topo (vidro fosco) ================= */
+.topo {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--vidro);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 0.5px solid var(--linha);
+  padding-top: env(safe-area-inset-top);
+}
+.topo-dentro {
+  max-width: 1040px; margin: 0 auto;
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.marca { font-weight: 600; font-size: 19px; letter-spacing: -0.02em; white-space: nowrap; }
+.topo .espaco { flex: 1; }
+.estado-salvar { font-size: 13px; color: var(--texto-3); white-space: nowrap; transition: opacity .3s; }
+.estado-salvar.erro { color: var(--vermelho); cursor: pointer; }
+
+.botao {
+  border: 0; border-radius: 980px;
+  padding: 8px 16px;
+  font-size: 15px; font-weight: 500;
+  background: var(--azul); color: #fff;
+  transition: transform .15s ease, opacity .2s, background .2s;
+  white-space: nowrap;
+}
+.botao:active { transform: scale(.96); }
+.botao.secundario { background: var(--trilho); color: var(--texto); }
+.botao.perigo { background: transparent; color: var(--vermelho); }
+.botao-icone {
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 0; background: var(--trilho); color: var(--texto);
+  display: grid; place-items: center;
+  transition: transform .15s ease;
+}
+.botao-icone:active { transform: scale(.92); }
+.botao-icone svg { width: 18px; height: 18px; }
+.girando svg { animation: girar .8s linear infinite; }
+@keyframes girar { to { transform: rotate(360deg); } }
+
+/* ================= Página ================= */
+main {
+  max-width: 1040px; margin: 0 auto;
+  padding: 20px 16px calc(60px + env(safe-area-inset-bottom));
+}
+.aviso-demo {
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  background: color-mix(in srgb, var(--laranja) 12%, var(--card-solido));
+  border: 0.5px solid color-mix(in srgb, var(--laranja) 35%, transparent);
+  border-radius: 18px; padding: 12px 16px; margin-bottom: 20px;
+  font-size: 15px;
+}
+.aviso-demo b { font-weight: 600; }
+.aviso-demo .espaco { flex: 1; min-width: 8px; }
+
+.cabecalho {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  margin: 8px 4px 20px;
+}
+.cabecalho h1 { margin: 0; font-size: clamp(32px, 6vw, 48px); line-height: 1.08; font-weight: 700; letter-spacing: -0.03em; }
+.cabecalho .sub { color: var(--texto-2); font-size: 17px; margin-top: 4px; }
+
+.seletor-mes {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--card); border-radius: 980px; padding: 4px;
+  box-shadow: var(--sombra);
+  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+}
+.seletor-mes span { min-width: 132px; text-align: center; font-weight: 500; font-size: 15px; text-transform: capitalize; }
+.seletor-mes button {
+  width: 32px; height: 32px; border-radius: 50%; border: 0; background: transparent;
+  color: var(--azul); font-size: 20px; line-height: 1; display: grid; place-items: center;
+}
+.seletor-mes button:disabled { color: var(--texto-3); opacity: .4; cursor: default; }
+.seletor-mes button:not(:disabled):hover { background: var(--trilho); }
+
+select.numero {
+  appearance: none; -webkit-appearance: none;
+  border: 0; border-radius: 980px; background: var(--trilho);
+  padding: 7px 30px 7px 14px; font-size: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2386868b' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  max-width: 170px;
+}
+
+/* ================= Cards ================= */
+.grade { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
+.card {
+  grid-column: span 12;
+  background: var(--card);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  backdrop-filter: saturate(180%) blur(24px);
+  border-radius: 28px;
+  box-shadow: var(--sombra);
+  border: 0.5px solid var(--linha);
+  padding: 24px;
+  min-width: 0;
+  opacity: 0; transform: translateY(14px);
+  animation: subir .7s cubic-bezier(.2,.8,.2,1) forwards;
+}
+.card:nth-child(2) { animation-delay: .06s; }
+.card:nth-child(3) { animation-delay: .12s; }
+.card:nth-child(4) { animation-delay: .18s; }
+.card:nth-child(5) { animation-delay: .24s; }
+.card:nth-child(6) { animation-delay: .30s; }
+@keyframes subir { to { opacity: 1; transform: none; } }
+.metade { grid-column: span 6; }
+@media (max-width: 820px) { .metade { grid-column: span 12; } }
+
+.card h2 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+.card .titulo { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.card .titulo .total { color: var(--texto-2); font-size: 15px; }
+.mais {
+  border: 0; background: transparent; color: var(--azul); font-weight: 500; font-size: 15px;
+  padding: 6px 2px; white-space: nowrap;
+}
+
+/* ================= Destaque: anéis + número grande ================= */
+.destaque { display: grid; grid-template-columns: auto 1fr; gap: 36px; align-items: center; padding: 32px; }
+@media (max-width: 700px) { .destaque { grid-template-columns: 1fr; gap: 24px; padding: 24px; justify-items: center; text-align: center; } }
+
+.aneis { position: relative; width: 220px; height: 220px; }
+.aneis svg { width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.aneis circle { fill: none; stroke-linecap: round; }
+.aneis .trilho { opacity: .2; }
+.aneis .progresso { transition: stroke-dashoffset 1.3s cubic-bezier(.3,.9,.3,1); }
+@media (max-width: 380px) { .aneis { width: 190px; height: 190px; } }
+
+.legenda-aneis { display: grid; gap: 10px; margin-top: 26px; }
+.legenda-aneis .item { display: grid; grid-template-columns: 10px 1fr auto; gap: 10px; align-items: baseline; font-size: 15px; }
+.legenda-aneis .bolinha { width: 10px; height: 10px; border-radius: 50%; transform: translateY(1px); }
+.legenda-aneis .rotulo { color: var(--texto-2); text-align: left; }
+.legenda-aneis .valor { font-weight: 600; text-align: right; color: var(--texto); }
+
+.grande .rotulo { font-size: 19px; color: var(--texto-2); font-weight: 500; }
+.grande .valor-grande {
+  font-size: clamp(44px, 9vw, 76px); font-weight: 700; letter-spacing: -0.04em; line-height: 1.04;
+  margin: 4px 0 6px;
+  background: linear-gradient(135deg, var(--texto) 30%, color-mix(in srgb, var(--texto) 60%, var(--anel-3)));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.grande .valor-grande.negativo { background: none; color: var(--vermelho); }
+.grande .por-dia { font-size: 17px; color: var(--texto-2); }
+.grande .por-dia b { color: var(--texto); font-weight: 600; }
+
+.alerta {
+  display: flex; gap: 10px; align-items: flex-start;
+  margin-top: 18px; padding: 12px 14px; border-radius: 16px;
+  background: color-mix(in srgb, var(--vermelho) 11%, transparent);
+  color: var(--vermelho); font-size: 15px; font-weight: 500; text-align: left;
+}
+.alerta svg { flex: none; width: 20px; height: 20px; margin-top: 1px; }
+
+/* ================= Listas (rendas, contas, lançamentos) ================= */
+.lista { list-style: none; margin: 0; padding: 0; }
+.lista li { border-top: 0.5px solid var(--linha); }
+.lista li:first-child { border-top: 0; }
+.linha {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; padding: 12px 4px; border: 0; background: transparent; text-align: left;
+  border-radius: 12px; transition: background .2s;
+}
+button.linha:hover { background: var(--trilho); }
+.linha .icone {
+  flex: none; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
+  font-size: 18px; background: var(--trilho);
+}
+.linha .meio { flex: 1; min-width: 0; }
+.linha .nome { display: block; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.linha .detalhe { display: block; font-size: 13px; color: var(--texto-2); }
+.linha .quanto { font-weight: 600; white-space: nowrap; }
+.linha .quanto.entrada { color: var(--verde); }
+.vazio { color: var(--texto-2); padding: 18px 4px 6px; font-size: 15px; }
+
+.selo {
+  display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 980px;
+  margin-top: 2px; letter-spacing: 0;
+}
+.selo.paga { color: var(--verde); background: color-mix(in srgb, var(--verde) 14%, transparent); }
+.selo.vence { color: var(--texto-2); background: var(--trilho); }
+.selo.hoje { color: var(--laranja); background: color-mix(in srgb, var(--laranja) 15%, transparent); }
+.selo.atrasada { color: var(--vermelho); background: color-mix(in srgb, var(--vermelho) 13%, transparent); }
+
+/* ================= Meta ================= */
+.meta-corpo { display: flex; align-items: center; gap: 18px; }
+.meta-corpo .meta-valor { font-size: 34px; font-weight: 700; letter-spacing: -0.03em; }
+.meta-corpo .meta-texto { color: var(--texto-2); font-size: 15px; }
+.barra { height: 8px; border-radius: 99px; background: var(--trilho); overflow: hidden; margin-top: 14px; }
+.barra > div { height: 100%; border-radius: 99px; background: var(--anel-3); width: 0; transition: width 1.2s cubic-bezier(.3,.9,.3,1); }
+
+/* ================= Rosca por categoria ================= */
+.rosca-area { display: grid; grid-template-columns: 1fr; gap: 20px; justify-items: center; }
+.rosca { position: relative; width: 200px; height: 200px; }
+.rosca svg { width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.rosca circle.fatia { fill: none; transition: stroke-width .2s, opacity .2s; cursor: pointer; }
+.rosca .centro {
+  position: absolute; inset: 0; display: grid; place-content: center; text-align: center; pointer-events: none;
+}
+.rosca .centro small { color: var(--texto-2); font-size: 13px; }
+.rosca .centro b { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+.legenda-cat { list-style: none; margin: 0; padding: 0; width: 100%; }
+.legenda-cat li {
+  display: grid; grid-template-columns: 12px minmax(0, 1fr) auto auto; gap: 10px; align-items: center;
+  padding: 7px 6px; font-size: 15px; border-radius: 10px; transition: background .2s; cursor: default;
+}
+.legenda-cat li.ativo { background: var(--trilho); }
+.legenda-cat .cor { width: 12px; height: 12px; border-radius: 4px; }
+.legenda-cat .pct { color: var(--texto-2); font-size: 13px; min-width: 38px; text-align: right; }
+.legenda-cat .v { font-weight: 600; text-align: right; white-space: nowrap; }
+.legenda-cat .nome-cat { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+
+.dica {
+  position: fixed; z-index: 50; pointer-events: none;
+  background: var(--card-solido); color: var(--texto);
+  border: 0.5px solid var(--linha); border-radius: 12px; box-shadow: var(--sombra-forte);
+  padding: 8px 12px; font-size: 13px; line-height: 1.35;
+  opacity: 0; transform: translateY(4px); transition: opacity .15s, transform .15s;
+}
+.dica.visivel { opacity: 1; transform: none; }
+.dica b { font-size: 15px; }
+
+/* ================= Folhas (janelas de editar / conectar) ================= */
+dialog {
+  border: 0; padding: 0; margin: auto;
+  width: min(440px, calc(100vw - 32px));
+  border-radius: 28px;
+  background: var(--card-solido); color: var(--texto);
+  box-shadow: var(--sombra-forte);
+}
+dialog[open] { animation: aparecer .35s cubic-bezier(.2,.9,.3,1.1); }
+dialog::backdrop {
+  background: rgba(0,0,0,.32);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  animation: escurecer .3s ease;
+}
+@keyframes aparecer { from { opacity: 0; transform: translateY(24px) scale(.97); } }
+@keyframes escurecer { from { opacity: 0; } }
+@media (max-width: 560px) {
+  dialog { width: 100vw; max-width: 100vw; margin: auto 0 0; border-radius: 28px 28px 0 0; padding-bottom: env(safe-area-inset-bottom); }
+  @keyframes aparecer { from { transform: translateY(100%); } }
+}
+.folha { padding: 24px; }
+.folha h3 { margin: 0 0 6px; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+.folha p.explica { margin: 0 0 18px; color: var(--texto-2); font-size: 15px; }
+.campo { display: block; margin-bottom: 14px; }
+.campo span { display: block; font-size: 13px; color: var(--texto-2); margin: 0 0 6px 4px; }
+.campo input {
+  width: 100%; border: 0.5px solid var(--linha); border-radius: 12px;
+  background: var(--trilho); padding: 12px 14px; font-size: 17px; outline: none;
+  transition: box-shadow .2s, border-color .2s;
+}
+.campo input:focus { border-color: var(--azul); box-shadow: 0 0 0 4px color-mix(in srgb, var(--azul) 22%, transparent); }
+.campos-lado { display: grid; grid-template-columns: 1fr 110px; gap: 12px; }
+.acoes { display: flex; gap: 10px; justify-content: flex-end; align-items: center; margin-top: 22px; }
+.acoes .espaco { flex: 1; }
+.erro-form { color: var(--vermelho); font-size: 14px; min-height: 20px; margin-top: 4px; }
+.miudo { font-size: 13px; color: var(--texto-3); margin-top: 12px; }
+.miudo a { color: var(--azul); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+@media (max-width: 560px) {
+  .marca { font-size: 17px; }
+  .estado-salvar { display: none; }
+  .card { padding: 20px; border-radius: 24px; }
+  .grade { gap: 14px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-dentro">
+    <div class="marca">💸 Finanças</div>
+    <select class="numero" id="numero" hidden aria-label="Número do WhatsApp"></select>
+    <div class="espaco"></div>
+    <span class="estado-salvar" id="estadoSalvar"></span>
+    <button class="botao-icone" id="btnAtualizar" title="Atualizar" aria-label="Atualizar" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+    </button>
+    <button class="botao" id="btnConectar">Conectar ao GitHub</button>
+  </div>
+</header>
+
+<main>
+  <div class="aviso-demo" id="avisoDemo" hidden>
+    <span>👀 <b>Modo demonstração</b> — esses números são só de exemplo.</span>
+    <span class="espaco"></span>
+    <button class="botao" data-acao="conectar">Conectar ao GitHub</button>
+  </div>
+
+  <div class="cabecalho">
+    <div>
+      <h1 id="saudacao">Seu mês</h1>
+      <div class="sub" id="subtitulo"></div>
+    </div>
+    <div class="seletor-mes" role="group" aria-label="Escolher mês">
+      <button id="mesAnterior" aria-label="Mês anterior">‹</button>
+      <span id="mesNome"></span>
+      <button id="mesSeguinte" aria-label="Próximo mês">›</button>
+    </div>
+  </div>
+
+  <div class="grade" id="grade">
+    <!-- Destaque -->
+    <section class="card destaque">
+      <div>
+        <div class="aneis" id="aneis" role="img"></div>
+      </div>
+      <div class="grande">
+        <div class="rotulo" id="rotuloGrande">Você ainda pode gastar</div>
+        <div class="valor-grande num" id="valorGrande">R$ 0,00</div>
+        <div class="por-dia" id="porDia"></div>
+        <div id="alertaContas"></div>
+        <div class="legenda-aneis" id="legendaAneis"></div>
+      </div>
+    </section>
+
+    <!-- Rendas -->
+    <section class="card metade">
+      <div class="titulo">
+        <div><h2>Fontes de renda</h2><div class="total num" id="totalRendas"></div></div>
+        <button class="mais" data-acao="nova-renda">+ Adicionar</button>
+      </div>
+      <ul class="lista" id="listaRendas"></ul>
+    </section>
+
+    <!-- Contas fixas -->
+    <section class="card metade">
+      <div class="titulo">
+        <div><h2>Contas fixas</h2><div class="total num" id="totalContas"></div></div>
+        <button class="mais" data-acao="nova-conta">+ Adicionar</button>
+      </div>
+      <ul class="lista" id="listaContas"></ul>
+    </section>
+
+    <!-- Gastos por categoria -->
+    <section class="card metade">
+      <div class="titulo">
+        <div><h2>Gastos por categoria</h2><div class="total">Fora as contas fixas</div></div>
+      </div>
+      <div id="categorias"></div>
+    </section>
+
+    <!-- Lançamentos -->
+    <section class="card metade">
+      <div class="titulo">
+        <div><h2>Últimos lançamentos</h2><div class="total">Vindos do WhatsApp</div></div>
+        <button class="mais" id="verTodos" hidden>Ver todos</button>
+      </div>
+      <ul class="lista" id="listaLancamentos"></ul>
+    </section>
+
+    <!-- Meta -->
+    <section class="card">
+      <div class="titulo">
+        <h2>Meta de economia</h2>
+        <button class="mais" data-acao="meta">Editar</button>
+      </div>
+      <div class="meta-corpo">
+        <div>
+          <div class="meta-valor num" id="metaValor"></div>
+          <div class="meta-texto" id="metaTexto"></div>
+        </div>
+      </div>
+      <div class="barra"><div id="metaBarra"></div></div>
+    </section>
+  </div>
+</main>
+
+<div class="dica" id="dica" role="tooltip"></div>
+
+<!-- Folha: conectar -->
+<dialog id="folhaConectar">
+  <form class="folha" method="dialog" id="formConectar">
+    <h3>Conectar ao GitHub</h3>
+    <p class="explica">Use o mesmo token, usuário e repositório do arquivo <code>.env</code> do bot. Fica guardado só neste navegador.</p>
+    <label class="campo"><span>Token</span><input name="token" type="password" autocomplete="off" required placeholder="github_pat_..."></label>
+    <div class="campos-lado">
+      <label class="campo"><span>Usuário</span><input name="owner" required autocapitalize="off" autocomplete="off" placeholder="seu-usuario"></label>
+      <label class="campo"><span>Branch</span><input name="branch" autocapitalize="off" autocomplete="off" placeholder="main"></label>
+    </div>
+    <label class="campo"><span>Repositório</span><input name="repo" required autocapitalize="off" autocomplete="off" placeholder="memoria-bot"></label>
+    <div class="erro-form" id="erroConectar"></div>
+    <div class="acoes">
+      <button type="button" class="botao perigo" id="btnDesconectar" hidden>Desconectar</button>
+      <span class="espaco"></span>
+      <button type="button" class="botao secundario" data-fechar>Cancelar</button>
+      <button type="submit" class="botao" id="btnFazerConexao">Conectar</button>
+    </div>
+    <div class="miudo">O site conversa direto com o GitHub (api.github.com). Nenhum outro servidor vê seus dados.</div>
+  </form>
+</dialog>
+
+<!-- Folha: editar renda / conta / meta -->
+<dialog id="folhaEditar">
+  <form class="folha" method="dialog" id="formEditar">
+    <h3 id="editarTitulo"></h3>
+    <p class="explica" id="editarExplica"></p>
+    <label class="campo" id="campoNome"><span>Nome</span><input name="nome" autocomplete="off"></label>
+    <div class="campos-lado" id="ladoValor">
+      <label class="campo"><span>Valor (R$)</span><input name="valor" inputmode="decimal" autocomplete="off" placeholder="0,00"></label>
+      <label class="campo" id="campoDia"><span>Vence dia</span><input name="dia" type="number" inputmode="numeric" min="1" max="31" placeholder="10"></label>
+    </div>
+    <div class="erro-form" id="erroEditar"></div>
+    <div class="acoes">
+      <button type="button" class="botao perigo" id="btnRemover" hidden>Remover</button>
+      <span class="espaco"></span>
+      <button type="button" class="botao secundario" data-fechar>Cancelar</button>
+      <button type="submit" class="botao">Salvar</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Folha: todos os lançamentos -->
+<dialog id="folhaTodos">
+  <div class="folha">
+    <h3 id="todosTitulo">Lançamentos</h3>
+    <p class="explica">Pra apagar um lançamento, mande <b>apaga gasto N</b> no WhatsApp.</p>
+    <ul class="lista" id="listaTodos" style="max-height: 60vh; overflow: auto;"></ul>
+    <div class="acoes"><button type="button" class="botao" data-fechar>Fechar</button></div>
+  </div>
+</dialog>
+
+<script>
+'use strict'
+
+/* =====================================================================
+   Regras de cálculo — cópia fiel do src/financas.js do bot.
+   Se mudar lá, mude aqui também.
+   ===================================================================== */
+
+function semAcento(t) {
+  return t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+}
+
+// Mês no horário de Brasília, ex.: "2026-10"
+function mesDe(data) {
+  return new Date(new Date(data).getTime() - 3 * 3600000).toISOString().slice(0, 7)
+}
+
+// Um gasto tipo "paguei 150 luz" é o pagamento da conta fixa "Luz", não um gasto extra.
+function contaFixaDoGasto(descricao, contas) {
+  const d = semAcento(descricao || '')
+  return contas.find(c => {
+    const n = semAcento(c.nome || '').trim()
+    return n && (d.includes(n) || n.includes(d) && d.length > 2)
+  })
+}
+
+function calcularResumo(lancs, plano) {
+  const gastosTodos = lancs.filter(l => l.tipo === 'gasto')
+  const entradas = lancs.filter(l => l.tipo === 'entrada').reduce((s, l) => s + l.valor, 0)
+  const rendaFixa = plano.rendas.reduce((s, r) => s + Number(r.valor || 0), 0)
+  const contasFixas = plano.contas.reduce((s, c) => s + Number(c.valor || 0), 0)
+  const renda = Math.max(rendaFixa, entradas)
+  const podeGastar = renda - contasFixas - plano.metaEconomia
+
+  const pagas = new Set()
+  let gastosVariaveis = 0
+  const porCategoria = {}
+  for (const l of gastosTodos) {
+    const conta = contaFixaDoGasto(l.descricao, plano.contas)
+    if (conta) { pagas.add(conta.nome); continue }
+    gastosVariaveis += l.valor
+    porCategoria[l.categoria] = (porCategoria[l.categoria] || 0) + l.valor
+  }
+  const contasAPagar = plano.contas.filter(c => !pagas.has(c.nome))
+
+  return {
+    gastos: gastosTodos.reduce((s, l) => s + l.valor, 0),
+    gastosVariaveis, entradas, rendaFixa, contasFixas, renda, podeGastar,
+    restante: podeGastar - gastosVariaveis,
+    faltaPraContas: Math.max(0, contasFixas - renda),
+    contasPagas: plano.contas.filter(c => pagas.has(c.nome)),
+    contasAPagar,
+    porCategoria
+  }
+}
+
+// "1.200,50" → 1200.5 | "50,90" → 50.9 | "1200" → 1200 | "1,5k" → 1500 (igual ao bot)
+function lerValor(txt) {
+  let t = String(txt).toLowerCase().replace(/r\$\s*/g, '').trim()
+  let mult = 1
+  if (/k$/.test(t)) { mult = 1000; t = t.slice(0, -1) }
+  if (/mil$/.test(t)) { mult = 1000; t = t.replace(/\s*mil$/, '') }
+  if (t.includes(',')) t = t.replace(/\./g, '').replace(',', '.')
+  else if (/\.\d{3}$/.test(t)) t = t.replace(/\./g, '')
+  const n = parseFloat(t) * mult
+  return isNaN(n) || n <= 0 ? null : Math.round(n * 100) / 100
+}
+
+/* ===================================================================== */
+
+const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
+const ICONES = {
+  'Mercado': '🛒', 'Alimentação': '🍔', 'Transporte': '🚗', 'Casa': '🏠', 'Saúde': '💊', 'Lazer': '🎉',
+  'Compras': '🛍️', 'Educação': '📚', 'Contas': '🧾', 'Outros': '📦',
+  'Salário': '💼', 'Freela': '💻', 'Vendas': '🤝', 'Entrada': '💰'
+}
+// Cada categoria tem sempre a mesma cor. Educação e o que não tiver cor entram em "Outros".
+const COR_CATEGORIA = {
+  'Mercado': 'var(--cat-1)', 'Alimentação': 'var(--cat-2)', 'Transporte': 'var(--cat-3)', 'Casa': 'var(--cat-4)',
+  'Saúde': 'var(--cat-5)', 'Lazer': 'var(--cat-6)', 'Compras': 'var(--cat-7)', 'Contas': 'var(--cat-8)'
+}
+
+const $ = (s) => document.querySelector(s)
+const dinheiro = (v) => 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+const esc = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+const agoraBR = () => new Date(Date.now() - 3 * 3600000) // campos UTC = hora de Brasília
+const mesAtual = () => mesDe(new Date())
+const nomeMes = (m) => MESES[parseInt(m.slice(5, 7)) - 1] + ' ' + m.slice(0, 4)
+function somaMes(m, n) {
+  const d = new Date(Date.UTC(parseInt(m.slice(0, 4)), parseInt(m.slice(5, 7)) - 1 + n, 1))
+  return d.toISOString().slice(0, 7)
+}
+function diaMes(data) {
+  const b = new Date(new Date(data).getTime() - 3 * 3600000)
+  return String(b.getUTCDate()).padStart(2, '0') + '/' + String(b.getUTCMonth() + 1).padStart(2, '0')
+}
+function diasNoMes(m) {
+  return new Date(Date.UTC(parseInt(m.slice(0, 4)), parseInt(m.slice(5, 7)), 0)).getUTCDate()
+}
+
+/* ================= Estado ================= */
+
+const estado = {
+  conexao: null,   // { token, owner, repo, branch }
+  numeros: [],     // pastas dentro de financas/
+  numero: null,
+  lancamentos: [],
+  plano: { rendas: [], contas: [], metaEconomia: 0 },
+  shaPlano: null,
+  mes: mesAtual(),
+  demo: true
+}
+
+function guardar(chave, valor) { try { valor == null ? localStorage.removeItem(chave) : localStorage.setItem(chave, JSON.stringify(valor)) } catch {} }
+function lerGuardado(chave) { try { return JSON.parse(localStorage.getItem(chave)) } catch { return null } }
+
+/* ================= Dados de exemplo ================= */
+
+function dadosDemo() {
+  const hoje = agoraBR()
+  const dia = hoje.getUTCDate()
+  const quando = (d, h = 12) => {
+    const dd = Math.max(1, Math.min(dia, d))
+    return new Date(Date.UTC(hoje.getUTCFullYear(), hoje.getUTCMonth(), dd, h + 3)).toISOString()
+  }
+  let n = 0
+  const l = (tipo, valor, descricao, categoria, d, h) => ({ id: 'demo' + (n++), tipo, valor, descricao, categoria, data: quando(d, h) })
+  return {
+    plano: {
+      rendas: [{ nome: 'Salário', valor: 5200 }, { nome: 'Freela', valor: 800 }],
+      contas: [
+        { nome: 'Aluguel', valor: 1600, dia: 5 }, { nome: 'Luz', valor: 180, dia: 10 },
+        { nome: 'Internet', valor: 110, dia: 15 }, { nome: 'Academia', valor: 120, dia: 20 },
+        { nome: 'Cartão', valor: 650, dia: 25 }
+      ],
+      metaEconomia: 800
+    },
+    lancamentos: [
+      l('entrada', 5200, 'salário', 'Salário', 1, 9),
+      l('gasto', 1600, 'aluguel', 'Casa', 2, 10),
+      l('gasto', 212.4, 'mercado', 'Mercado', 2, 18),
+      l('gasto', 34.9, 'ifood', 'Alimentação', 3, 20),
+      l('gasto', 22.5, 'uber', 'Transporte', 4, 8),
+      l('gasto', 89.9, 'tênis', 'Compras', 5, 15),
+      l('gasto', 180, 'luz', 'Casa', 6, 11),
+      l('gasto', 64, 'cinema', 'Lazer', 7, 21),
+      l('gasto', 48.7, 'farmácia', 'Saúde', 8, 13),
+      l('gasto', 156.3, 'mercado', 'Mercado', 9, 17),
+      l('gasto', 120, 'gasolina', 'Transporte', 10, 9),
+      l('gasto', 42, 'pizza', 'Alimentação', 11, 21)
+    ]
+  }
+}
+
+/* ================= GitHub ================= */
+
+async function gh(caminho, opcoes = {}) {
+  const c = estado.conexao
+  const resp = await fetch(`https://api.github.com/repos/${encodeURIComponent(c.owner)}/${encodeURIComponent(c.repo)}${caminho}`, {
+    cache: 'no-store',
+    ...opcoes,
+    headers: {
+      'Accept': 'application/vnd.github+json',
+      'Authorization': 'Bearer ' + c.token,
+      'X-GitHub-Api-Version': '2022-11-28',
+      ...(opcoes.headers || {})
+    }
+  })
+  if (!resp.ok) {
+    const e = new Error('GitHub respondeu ' + resp.status)
+    e.status = resp.status
+    throw e
+  }
+  return resp
+}
+const refQuery = () => estado.conexao.branch ? '?ref=' + encodeURIComponent(estado.conexao.branch) : ''
+const caminhoArquivo = (nome) => `/contents/financas/${encodeURIComponent(estado.numero)}/${nome}`
+
+function deBase64(b64) {
+  const bin = atob(b64.replace(/\n/g, ''))
+  return new TextDecoder().decode(Uint8Array.from(bin, ch => ch.charCodeAt(0)))
+}
+function paraBase64(texto) {
+  const bytes = new TextEncoder().encode(texto)
+  let bin = ''
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000))
+  return btoa(bin)
+}
+
+async function listarNumeros() {
+  try {
+    const r = await gh('/contents/financas' + refQuery())
+    const itens = await r.json()
+    return Array.isArray(itens) ? itens.filter(i => i.type === 'dir').map(i => i.name).sort() : []
+  } catch (e) {
+    if (e.status === 404) return []
+    throw e
+  }
+}
+
+async function lerLancamentos() {
+  try {
+    // "raw" devolve o arquivo puro, mesmo se ele ficar grande
+    const r = await gh(caminhoArquivo('lancamentos.json') + refQuery(), { headers: { 'Accept': 'application/vnd.github.raw+json' } })
+    const lista = JSON.parse(await r.text())
+    return Array.isArray(lista) ? lista : []
+  } catch (e) {
+    if (e.status === 404) return []
+    throw e
+  }
+}
+
+async function lerPlanejamento() {
+  try {
+    const r = await gh(caminhoArquivo('planejamento.json') + refQuery())
+    const dados = await r.json()
+    const p = JSON.parse(deBase64(dados.content)) || {}
+    return { sha: dados.sha, plano: { rendas: p.rendas || [], contas: p.contas || [], metaEconomia: Number(p.metaEconomia) || 0 } }
+  } catch (e) {
+    if (e.status === 404) return { sha: null, plano: { rendas: [], contas: [], metaEconomia: 0 } }
+    throw e
+  }
+}
+
+async function salvarPlanejamento(tentarDeNovo = true) {
+  const corpo = {
+    message: '📊 Planejamento atualizado pelo site',
+    content: paraBase64(JSON.stringify(estado.plano, null, 2) + '\n')
+  }
+  if (estado.shaPlano) corpo.sha = estado.shaPlano
+  if (estado.conexao.branch) corpo.branch = estado.conexao.branch
+  try {
+    const r = await gh(caminhoArquivo('planejamento.json'), { method: 'PUT', body: JSON.stringify(corpo), headers: { 'Content-Type': 'application/json' } })
+    estado.shaPlano = (await r.json()).content.sha
+  } catch (e) {
+    // O arquivo mudou em outro lugar (outra aba, outro celular)? Pega a versão nova do sha e tenta de novo.
+    if (tentarDeNovo && (e.status === 409 || e.status === 422)) {
+      const atual = await lerPlanejamento()
+      estado.shaPlano = atual.sha
+      return salvarPlanejamento(false)
+    }
+    throw e
+  }
+}
+
+/* ================= Salvamento automático ================= */
+
+let timerSalvar = null
+let salvando = Promise.resolve()
+function mostrarEstadoSalvar(texto, erro = false) {
+  const el = $('#estadoSalvar')
+  el.textContent = texto
+  el.classList.toggle('erro', erro)
+}
+function planoMudou() {
+  render()
+  if (estado.demo) { mostrarEstadoSalvar('Só neste navegador (demonstração)'); return }
+  mostrarEstadoSalvar('Salvando…')
+  clearTimeout(timerSalvar)
+  timerSalvar = setTimeout(() => {
+    salvando = salvando.then(salvarPlanejamento)
+      .then(() => mostrarEstadoSalvar('Salvo no GitHub ✓'))
+      .catch(e => {
+        console.error(e)
+        mostrarEstadoSalvar('Não salvou — toque pra tentar de novo', true)
+      })
+  }, 700)
+}
+$('#estadoSalvar').addEventListener('click', () => { if ($('#estadoSalvar').classList.contains('erro')) planoMudou() })
+
+/* ================= Carregar ================= */
+
+async function carregar() {
+  const btn = $('#btnAtualizar')
+  if (!estado.conexao) {
+    const d = dadosDemo()
+    estado.demo = true
+    estado.plano = d.plano
+    estado.lancamentos = d.lancamentos
+    render()
+    return
+  }
+  btn.classList.add('girando')
+  try {
+    estado.numeros = await listarNumeros()
+    const guardado = lerGuardado('financas.numero')
+    estado.numero = estado.numeros.includes(estado.numero) ? estado.numero
+      : estado.numeros.includes(guardado) ? guardado : estado.numeros[0] || null
+    if (!estado.numero) {
+      estado.demo = true
+      const d = dadosDemo()
+      estado.plano = d.plano
+      estado.lancamentos = d.lancamentos
+      render()
+      avisoSemPasta()
+      return
+    }
+    const [lancs, plan] = await Promise.all([lerLancamentos(), lerPlanejamento()])
+    estado.lancamentos = lancs
+    estado.plano = plan.plano
+    estado.shaPlano = plan.sha
+    estado.demo = false
+    mostrarEstadoSalvar('')
+    render()
+  } catch (e) {
+    console.error(e)
+    alert(e.status === 401 ? 'O token não funcionou mais. Conecte de novo.' : 'Não consegui buscar os dados no GitHub. Confira a internet e tente de novo.')
+    if (e.status === 401) abrirConectar()
+  } finally {
+    btn.classList.remove('girando')
+  }
+}
+
+function avisoSemPasta() {
+  const aviso = $('#avisoDemo')
+  aviso.querySelector('span').innerHTML = '📭 <b>Conectado, mas ainda não tem dados de finanças.</b> Mande <b>gastei 1 teste</b> e depois <b>desfaz</b> no WhatsApp pra criar sua pasta, e toque em atualizar.'
+  aviso.querySelector('button').hidden = true
+}
+
+/* ================= Desenho da página ================= */
+
+function render() {
+  const { plano, mes } = estado
+  const doMes = estado.lancamentos.filter(l => mesDe(l.data) === mes)
+  const r = calcularResumo(doMes, plano)
+  const atual = mesAtual()
+  const ehAtual = mes === atual
+  const passado = mes < atual
+
+  // Topo / aviso
+  const aviso = $('#avisoDemo')
+  aviso.hidden = !estado.demo
+  if (estado.demo && estado.conexao == null) {
+    aviso.querySelector('span').innerHTML = '👀 <b>Modo demonstração</b> — esses números são só de exemplo.'
+    aviso.querySelector('button').hidden = false
+  }
+  $('#btnConectar').textContent = estado.conexao ? 'Conectado' : 'Conectar ao GitHub'
+  $('#btnConectar').classList.toggle('secundario', !!estado.conexao)
+  $('#btnAtualizar').hidden = !estado.conexao
+  const sel = $('#numero')
+  sel.hidden = estado.numeros.length < 2
+  sel.innerHTML = estado.numeros.map(n => `<option value="${esc(n)}"${n === estado.numero ? ' selected' : ''}>📱 ${esc(formatarNumero(n))}</option>`).join('')
+
+  // Cabeçalho
+  const hora = agoraBR().getUTCHours()
+  $('#saudacao').textContent = hora < 5 ? 'Boa noite' : hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite'
+  $('#subtitulo').textContent = ehAtual ? 'Veja como está o seu mês.' : passado ? 'Como foi ' + MESES[parseInt(mes.slice(5)) - 1] + '.' : ''
+  $('#mesNome').textContent = nomeMes(mes)
+  const primeiroMes = estado.lancamentos.reduce((min, l) => { const m = mesDe(l.data); return m < min ? m : min }, atual)
+  $('#mesAnterior').disabled = mes <= somaMes(primeiroMes, -1)
+  $('#mesSeguinte').disabled = mes >= atual
+
+  // Número grande
+  const valorEl = $('#valorGrande')
+  if (r.renda <= 0) {
+    $('#rotuloGrande').textContent = 'Comece cadastrando sua renda'
+    animarNumero(valorEl, 0)
+    valorEl.classList.remove('negativo')
+    $('#porDia').innerHTML = 'Adicione suas fontes de renda abaixo pra saber quanto pode gastar.'
+  } else if (r.restante < 0) {
+    $('#rotuloGrande').textContent = passado ? 'Você passou do limite em' : 'Você já passou do limite em'
+    animarNumero(valorEl, -r.restante)
+    valorEl.classList.add('negativo')
+    $('#porDia').innerHTML = passado ? `em ${MESES[parseInt(mes.slice(5)) - 1]}` : 'este mês. Segura os gastos até o mês virar.'
+  } else {
+    valorEl.classList.remove('negativo')
+    animarNumero(valorEl, r.restante)
+    if (passado) {
+      $('#rotuloGrande').textContent = 'Sobrou pra gastar'
+      $('#porDia').innerHTML = `em ${MESES[parseInt(mes.slice(5)) - 1]}, além da meta de economia.`
+    } else {
+      $('#rotuloGrande').textContent = 'Você ainda pode gastar'
+      const dias = ehAtual ? diasNoMes(mes) - agoraBR().getUTCDate() + 1 : diasNoMes(mes)
+      $('#porDia').innerHTML = `este mês · <b class="num">${dinheiro(r.restante / dias)}</b> por dia até o fim do mês`
+    }
+  }
+  $('#alertaContas').innerHTML = r.faltaPraContas > 0
+    ? `<div class="alerta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg><span>Faltam <b class="num">${dinheiro(r.faltaPraContas)}</b> pra pagar suas contas fixas.</span></div>`
+    : ''
+
+  // Anéis
+  const valorPago = r.contasPagas.reduce((s, c) => s + Number(c.valor || 0), 0)
+  const guardadoPraMeta = Math.max(0, Math.min(plano.metaEconomia, r.restante + plano.metaEconomia))
+  const aneis = [
+    { cor: 'var(--anel-1)', nome: 'Renda já gasta', p: r.renda > 0 ? r.gastos / r.renda : 0, texto: r.renda > 0 ? Math.round(r.gastos / r.renda * 100) + '%' : '—' },
+    { cor: 'var(--anel-2)', nome: 'Contas fixas pagas', p: r.contasFixas > 0 ? valorPago / r.contasFixas : 0, texto: plano.contas.length ? `${r.contasPagas.length} de ${plano.contas.length}` : '—' },
+    { cor: 'var(--anel-3)', nome: 'Meta de economia', p: plano.metaEconomia > 0 ? guardadoPraMeta / plano.metaEconomia : 0,
+      texto: plano.metaEconomia > 0 ? (guardadoPraMeta >= plano.metaEconomia ? 'garantida' : 'faltam ' + dinheiro(plano.metaEconomia - guardadoPraMeta)) : '—' }
+  ]
+  desenharAneis(aneis)
+
+  // Rendas
+  $('#totalRendas').textContent = plano.rendas.length ? dinheiro(r.rendaFixa) + ' por mês' : ''
+  $('#listaRendas').innerHTML = plano.rendas.length
+    ? plano.rendas.map((x, i) => `<li><button class="linha" data-editar-renda="${i}">
+        <span class="icone">${ICONES[x.nome] || '💰'}</span>
+        <span class="meio"><span class="nome">${esc(x.nome)}</span></span>
+        <span class="quanto num">${dinheiro(x.valor)}</span></button></li>`).join('')
+      + (r.entradas > r.rendaFixa ? `<li><div class="linha"><span class="icone">✨</span><span class="meio"><span class="nome">Entrou mais que o previsto</span><span class="detalhe">Pelo WhatsApp este mês</span></span><span class="quanto entrada num">${dinheiro(r.entradas)}</span></div></li>` : '')
+    : `<li class="vazio">Nenhuma renda cadastrada. Toque em <b>+ Adicionar</b>.</li>`
+
+  // Contas fixas
+  const pagas = new Set(r.contasPagas.map(c => c.nome))
+  const hoje = agoraBR().getUTCDate()
+  const contas = plano.contas.map((c, i) => ({ ...c, i })).sort((a, b) => (a.dia || 99) - (b.dia || 99))
+  $('#totalContas').textContent = plano.contas.length ? `${dinheiro(r.contasFixas)} · ${r.contasPagas.length} de ${plano.contas.length} pagas` : ''
+  $('#listaContas').innerHTML = contas.length
+    ? contas.map(c => {
+        let selo
+        if (pagas.has(c.nome)) selo = '<span class="selo paga">✓ paga</span>'
+        else if (!c.dia) selo = '<span class="selo vence">sem dia</span>'
+        else if (passado || (ehAtual && hoje > c.dia)) selo = '<span class="selo atrasada">atrasada</span>'
+        else if (ehAtual && hoje === Number(c.dia)) selo = '<span class="selo hoje">vence hoje</span>'
+        else selo = `<span class="selo vence">vence dia ${esc(c.dia)}</span>`
+        return `<li><button class="linha" data-editar-conta="${c.i}">
+          <span class="icone">${iconeConta(c.nome)}</span>
+          <span class="meio"><span class="nome">${esc(c.nome)}</span>${selo}</span>
+          <span class="quanto num">${dinheiro(c.valor)}</span></button></li>`
+      }).join('')
+    : `<li class="vazio">Nenhuma conta fixa. Toque em <b>+ Adicionar</b> (aluguel, luz, internet…).</li>`
+
+  // Categorias
+  desenharRosca(r.porCategoria, r.gastosVariaveis)
+
+  // Lançamentos
+  const recentes = doMes.slice().sort((a, b) => b.data.localeCompare(a.data))
+  $('#listaLancamentos').innerHTML = recentes.length
+    ? recentes.slice(0, 8).map(linhaLancamento).join('')
+    : `<li class="vazio">Nada por aqui ainda. Mande <b>gastei 50 no mercado</b> no WhatsApp.</li>`
+  $('#verTodos').hidden = recentes.length <= 8
+  $('#listaTodos').innerHTML = recentes.map(linhaLancamento).join('')
+  $('#todosTitulo').textContent = 'Lançamentos de ' + nomeMes(mes)
+
+  // Meta
+  $('#metaValor').textContent = plano.metaEconomia ? dinheiro(plano.metaEconomia) : 'Sem meta'
+  $('#metaTexto').textContent = !plano.metaEconomia
+    ? 'Defina quanto quer guardar por mês. Esse valor sai do "pode gastar".'
+    : r.renda <= 0 ? 'Cadastre sua renda pra acompanhar a meta.'
+    : guardadoPraMeta >= plano.metaEconomia ? 'Meta garantida! Continue dentro do limite pra não mexer nela.'
+    : `Seus gastos já comeram ${dinheiro(plano.metaEconomia - guardadoPraMeta)} da meta.`
+  requestAnimationFrame(() => { $('#metaBarra').style.width = (plano.metaEconomia > 0 ? Math.round(guardadoPraMeta / plano.metaEconomia * 100) : 0) + '%' })
+}
+
+function linhaLancamento(l) {
+  const conta = l.tipo === 'gasto' && contaFixaDoGasto(l.descricao, estado.plano.contas)
+  const detalhe = conta ? `Conta fixa · ${diaMes(l.data)}` : `${esc(l.categoria)} · ${diaMes(l.data)}`
+  return `<li><div class="linha">
+    <span class="icone">${ICONES[l.categoria] || (l.tipo === 'entrada' ? '💰' : '💸')}</span>
+    <span class="meio"><span class="nome">${esc(primeiraMaiuscula(l.descricao))}</span><span class="detalhe">${detalhe}</span></span>
+    <span class="quanto num ${l.tipo === 'entrada' ? 'entrada' : ''}">${l.tipo === 'entrada' ? '+' : '−'}${dinheiro(l.valor)}</span>
+  </div></li>`
+}
+
+const primeiraMaiuscula = (t) => String(t || '').charAt(0).toUpperCase() + String(t || '').slice(1)
+function formatarNumero(n) {
+  const m = String(n).match(/^55(\d{2})(\d{4,5})(\d{4})$/)
+  return m ? `(${m[1]}) ${m[2]}-${m[3]}` : n
+}
+function iconeConta(nome) {
+  const n = semAcento(nome || '')
+  const tabela = [['aluguel', '🏠'], ['condominio', '🏢'], ['luz', '💡'], ['energia', '💡'], ['agua', '🚿'], ['internet', '📶'],
+    ['celular', '📱'], ['gas', '🔥'], ['academia', '🏋️'], ['cartao', '💳'], ['escola', '🎒'], ['faculdade', '🎓'],
+    ['saude', '🩺'], ['seguro', '🛡️'], ['streaming', '📺'], ['netflix', '📺'], ['spotify', '🎵'], ['carro', '🚗']]
+  return (tabela.find(([p]) => n.includes(p)) || [, '🧾'])[1]
+}
+
+/* ---------- Número que "conta" até o valor ---------- */
+const ultimoValor = new WeakMap()
+function animarNumero(el, alvo) {
+  const de = ultimoValor.get(el) ?? 0
+  ultimoValor.set(el, alvo)
+  const reduzir = matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (reduzir || de === alvo) { el.textContent = dinheiro(alvo); return }
+  const inicio = performance.now(), dur = 900
+  const passo = (t) => {
+    const k = Math.min(1, (t - inicio) / dur)
+    const e = 1 - Math.pow(1 - k, 3)
+    el.textContent = dinheiro(de + (alvo - de) * e)
+    if (k < 1) requestAnimationFrame(passo)
+  }
+  requestAnimationFrame(passo)
+}
+
+/* ---------- Anéis estilo Apple Watch ---------- */
+function desenharAneis(aneis) {
+  const caixa = 220, largura = 22, folga = 4
+  const raio0 = caixa / 2 - largura / 2
+  const el = $('#aneis')
+  if (!el.querySelector('svg')) {
+    el.innerHTML = `<svg viewBox="0 0 ${caixa} ${caixa}">` + aneis.map((a, i) => {
+      const raio = raio0 - i * (largura + folga)
+      const c = 2 * Math.PI * raio
+      return `<circle class="trilho" cx="${caixa / 2}" cy="${caixa / 2}" r="${raio}" stroke="${a.cor}" stroke-width="${largura}"/>
+              <circle class="progresso" data-anel="${i}" cx="${caixa / 2}" cy="${caixa / 2}" r="${raio}" stroke="${a.cor}" stroke-width="${largura}"
+                stroke-dasharray="${c}" stroke-dashoffset="${c}"/>`
+    }).join('') + '</svg>'
+  }
+  aneis.forEach((a, i) => {
+    const raio = raio0 - i * (largura + folga)
+    const c = 2 * Math.PI * raio
+    const p = Math.max(0, Math.min(1, a.p || 0))
+    const circ = el.querySelector(`[data-anel="${i}"]`)
+    // Arco vazio some (senão a ponta arredondada vira um pontinho)
+    circ.style.opacity = p > 0 ? 1 : 0
+    requestAnimationFrame(() => requestAnimationFrame(() => { circ.style.strokeDashoffset = c * (1 - p) }))
+  })
+  el.setAttribute('aria-label', aneis.map(a => `${a.nome}: ${a.texto}`).join('. '))
+  $('#legendaAneis').innerHTML = aneis.map(a => `<div class="item">
+    <span class="bolinha" style="background:${a.cor}"></span>
+    <span class="rotulo">${a.nome}</span>
+    <span class="valor num">${a.texto}</span></div>`).join('')
+}
+
+/* ---------- Rosca por categoria ---------- */
+function desenharRosca(porCategoria, total) {
+  const area = $('#categorias')
+  // Junta Educação e o que não tem cor própria em "Outros"
+  const juntos = {}
+  const dentroDeOutros = []
+  for (const [cat, v] of Object.entries(porCategoria)) {
+    if (COR_CATEGORIA[cat]) juntos[cat] = v
+    else { juntos['Outros'] = (juntos['Outros'] || 0) + v; if (cat !== 'Outros') dentroDeOutros.push(cat) }
+  }
+  const itens = Object.entries(juntos).sort((a, b) => b[1] - a[1])
+  if (!itens.length || total <= 0) {
+    area.innerHTML = `<div class="vazio">Nenhum gasto neste mês (fora as contas fixas).</div>`
+    return
+  }
+  const caixa = 200, largura = 26, raio = caixa / 2 - largura / 2
+  const c = 2 * Math.PI * raio
+  const gap = itens.length > 1 ? 2 : 0 // 2px de respiro entre fatias
+  let acumulado = 0
+  const fatias = itens.map(([cat, v], i) => {
+    const tam = v / total * c
+    const visivel = Math.max(0.5, tam - gap)
+    const s = `<circle class="fatia" data-i="${i}" cx="${caixa / 2}" cy="${caixa / 2}" r="${raio}"
+      stroke="${COR_CATEGORIA[cat] || 'var(--cat-outros)'}" stroke-width="${largura}"
+      stroke-dasharray="${visivel} ${c - visivel}" stroke-dashoffset="${-acumulado}"/>`
+    acumulado += tam
+    return s
+  }).join('')
+  area.innerHTML = `<div class="rosca-area">
+    <div class="rosca"><svg viewBox="0 0 ${caixa} ${caixa}">${fatias}</svg>
+      <div class="centro"><small>Gastos extras</small><b class="num">${dinheiro(total)}</b></div></div>
+    <ul class="legenda-cat">${itens.map(([cat, v], i) => `<li data-i="${i}">
+      <span class="cor" style="background:${COR_CATEGORIA[cat] || 'var(--cat-outros)'}"></span>
+      <span class="nome-cat">${ICONES[cat] || ''} ${esc(cat)}${cat === 'Outros' && dentroDeOutros.length ? ` <small style="color:var(--texto-3)">(${esc(dentroDeOutros.join(', '))})</small>` : ''}</span>
+      <span class="pct num">${Math.round(v / total * 100)}%</span>
+      <span class="v num">${dinheiro(v)}</span></li>`).join('')}</ul>
+  </div>`
+
+  // Passar o mouse/dedo: destaca a fatia e mostra o valor
+  const dica = $('#dica')
+  const destacar = (i, ev) => {
+    area.querySelectorAll('.fatia').forEach(f => {
+      const eu = f.dataset.i === String(i)
+      f.style.strokeWidth = i == null ? largura : eu ? largura + 6 : largura
+      f.style.opacity = i == null || eu ? 1 : 0.35
+    })
+    area.querySelectorAll('.legenda-cat li').forEach(li => li.classList.toggle('ativo', li.dataset.i === String(i)))
+    if (i == null || !ev) { dica.classList.remove('visivel'); return }
+    const [cat, v] = itens[i]
+    dica.innerHTML = `${ICONES[cat] || ''} ${esc(cat)}<br><b class="num">${dinheiro(v)}</b> <span style="color:var(--texto-2)">· ${Math.round(v / total * 100)}%</span>`
+    const x = Math.min(innerWidth - 180, ev.clientX + 14), y = ev.clientY + 14
+    dica.style.left = x + 'px'; dica.style.top = y + 'px'
+    dica.classList.add('visivel')
+  }
+  area.querySelectorAll('.fatia').forEach(f => {
+    f.addEventListener('pointermove', ev => destacar(f.dataset.i, ev))
+    f.addEventListener('pointerleave', () => destacar(null))
+  })
+  area.querySelectorAll('.legenda-cat li').forEach(li => {
+    li.addEventListener('pointerenter', () => destacar(li.dataset.i))
+    li.addEventListener('pointerleave', () => destacar(null))
+  })
+}
+
+/* ================= Editar renda / conta / meta ================= */
+
+let editando = null // { tipo: 'renda'|'conta'|'meta', i }
+function abrirEditar(tipo, i = null) {
+  editando = { tipo, i }
+  const f = $('#formEditar')
+  const item = tipo === 'renda' ? estado.plano.rendas[i] : tipo === 'conta' ? estado.plano.contas[i] : null
+  $('#editarTitulo').textContent = tipo === 'meta' ? 'Meta de economia'
+    : (item ? 'Editar ' : 'Nova ') + (tipo === 'renda' ? 'fonte de renda' : 'conta fixa')
+  $('#editarExplica').textContent = tipo === 'meta' ? 'Quanto você quer guardar todo mês? Esse valor sai do "pode gastar".'
+    : tipo === 'renda' ? 'Ex.: Salário, Freela, Aluguel de imóvel.'
+    : 'Dica: use o mesmo nome que você manda no WhatsApp (ex.: "Luz") que o bot marca como paga sozinho.'
+  $('#campoNome').hidden = tipo === 'meta'
+  $('#campoDia').hidden = tipo !== 'conta'
+  $('#ladoValor').style.gridTemplateColumns = tipo === 'conta' ? '' : '1fr'
+  f.nome.value = item?.nome || ''
+  const v = tipo === 'meta' ? estado.plano.metaEconomia : item?.valor
+  f.valor.value = v ? Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''
+  f.dia.value = item?.dia || ''
+  $('#btnRemover').hidden = !(item || (tipo === 'meta' && estado.plano.metaEconomia))
+  $('#erroEditar').textContent = ''
+  $('#folhaEditar').showModal()
+  setTimeout(() => (tipo === 'meta' ? f.valor : f.nome).focus(), 50)
+}
+
+$('#formEditar').addEventListener('submit', (ev) => {
+  const f = ev.target
+  const { tipo, i } = editando
+  const valor = lerValor(f.valor.value)
+  const nome = f.nome.value.trim()
+  const dia = parseInt(f.dia.value)
+  let erro = ''
+  if (tipo !== 'meta' && !nome) erro = 'Coloque um nome.'
+  else if (!valor) erro = 'Coloque um valor, ex.: 1.500,00'
+  else if (tipo === 'conta' && f.dia.value && !(dia >= 1 && dia <= 31)) erro = 'O dia vai de 1 a 31.'
+  if (erro) { ev.preventDefault(); $('#erroEditar').textContent = erro; return }
+
+  if (tipo === 'meta') estado.plano.metaEconomia = valor
+  else {
+    const lista = tipo === 'renda' ? estado.plano.rendas : estado.plano.contas
+    const novo = tipo === 'renda' ? { nome, valor } : { nome, valor, dia: dia || null }
+    if (i == null) lista.push(novo); else lista[i] = novo
+  }
+  planoMudou()
+})
+
+$('#btnRemover').addEventListener('click', () => {
+  const { tipo, i } = editando
+  if (tipo === 'meta') estado.plano.metaEconomia = 0
+  else (tipo === 'renda' ? estado.plano.rendas : estado.plano.contas).splice(i, 1)
+  $('#folhaEditar').close()
+  planoMudou()
+})
+
+/* ================= Conectar ================= */
+
+function abrirConectar() {
+  const f = $('#formConectar')
+  const c = estado.conexao || lerGuardado('financas.conexao') || {}
+  f.token.value = c.token || ''
+  f.owner.value = c.owner || ''
+  f.repo.value = c.repo || ''
+  f.branch.value = c.branch || ''
+  $('#erroConectar').textContent = ''
+  $('#btnDesconectar').hidden = !estado.conexao
+  $('#folhaConectar').showModal()
+}
+
+$('#formConectar').addEventListener('submit', async (ev) => {
+  ev.preventDefault()
+  const f = ev.target
+  const nova = { token: f.token.value.trim(), owner: f.owner.value.trim(), repo: f.repo.value.trim(), branch: f.branch.value.trim() }
+  const btn = $('#btnFazerConexao')
+  btn.disabled = true; btn.textContent = 'Conectando…'
+  $('#erroConectar').textContent = ''
+  const antiga = estado.conexao
+  estado.conexao = nova
+  try {
+    await gh('')
+    guardar('financas.conexao', nova)
+    estado.numero = null
+    $('#folhaConectar').close()
+    await carregar()
+  } catch (e) {
+    estado.conexao = antiga
+    $('#erroConectar').textContent = e.status === 401 ? 'Token inválido ou vencido.'
+      : e.status === 404 ? 'Não achei esse repositório (ou o token não tem acesso a ele).'
+      : e.status === 403 ? 'O GitHub recusou. Confira as permissões do token (Contents: Read and write).'
+      : 'Não consegui falar com o GitHub. Confira a internet.'
+  } finally {
+    btn.disabled = false; btn.textContent = 'Conectar'
+  }
+})
+
+$('#btnDesconectar').addEventListener('click', () => {
+  guardar('financas.conexao', null)
+  guardar('financas.numero', null)
+  estado.conexao = null
+  estado.numeros = []
+  estado.numero = null
+  estado.shaPlano = null
+  mostrarEstadoSalvar('')
+  $('#folhaConectar').close()
+  carregar()
+})
+
+/* ================= Botões ================= */
+
+document.addEventListener('click', (ev) => {
+  const alvo = ev.target.closest('[data-acao],[data-editar-renda],[data-editar-conta],[data-fechar]')
+  if (!alvo) return
+  if (alvo.dataset.fechar !== undefined) return alvo.closest('dialog').close()
+  if (alvo.dataset.editarRenda) return abrirEditar('renda', parseInt(alvo.dataset.editarRenda))
+  if (alvo.dataset.editarConta) return abrirEditar('conta', parseInt(alvo.dataset.editarConta))
+  const acao = alvo.dataset.acao
+  if (acao === 'conectar') abrirConectar()
+  if (acao === 'nova-renda') abrirEditar('renda')
+  if (acao === 'nova-conta') abrirEditar('conta')
+  if (acao === 'meta') abrirEditar('meta')
+})
+// Tocar fora da folha fecha
+document.querySelectorAll('dialog').forEach(d => d.addEventListener('click', ev => { if (ev.target === d) d.close() }))
+
+$('#btnConectar').addEventListener('click', abrirConectar)
+$('#btnAtualizar').addEventListener('click', carregar)
+$('#verTodos').addEventListener('click', () => $('#folhaTodos').showModal())
+$('#mesAnterior').addEventListener('click', () => { estado.mes = somaMes(estado.mes, -1); render() })
+$('#mesSeguinte').addEventListener('click', () => { estado.mes = somaMes(estado.mes, 1); render() })
+$('#numero').addEventListener('change', (ev) => {
+  estado.numero = ev.target.value
+  guardar('financas.numero', estado.numero)
+  carregar()
+})
+// Voltou pra aba? Busca os lançamentos novos do WhatsApp.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && estado.conexao && !estado.demo && !document.querySelector('dialog[open]')) carregar()
+})
+
+/* ================= Começo ================= */
+estado.conexao = lerGuardado('financas.conexao')
+carregar()
+</script>
+</body>
+</html>
